@@ -6,19 +6,20 @@
 
 <style>
 body{
+  margin:0;
   font-family:Arial;
   text-align:center;
-  margin-top:120px;
-  background:#000;
+  background:black;
   color:white;
 }
 
-/* chữ bấm */
+/* nút bấm */
 #clickText{
+  margin-top:120px;
   font-size:32px;
   color:#00eaff;
   cursor:pointer;
-  text-shadow:0 0 15px #00eaff;
+  text-shadow:0 0 20px #00eaff;
 }
 
 /* popup nền */
@@ -28,18 +29,19 @@ body{
   top:0; left:0;
   width:100%;
   height:100%;
-  background:rgba(0,0,0,0.9);
+  background:rgba(0,0,0,0.7);
+  z-index:999;
 }
 
-/* hộp popup */
+/* hộp lời chúc */
 .popup-content{
-  background:#fff;
+  background:rgba(255,255,255,0.95);
+  backdrop-filter:blur(8px);
   color:#111;
-  width:400px;
+  width:360px;
   padding:25px;
-  margin:5% auto;
+  margin:8% auto;
   border-radius:20px;
-  text-align:center;
   animation:zoom 0.4s ease;
 }
 
@@ -48,7 +50,6 @@ body{
   to{transform:scale(1);opacity:1}
 }
 
-/* lời chúc */
 .message{
   font-size:20px;
   font-weight:bold;
@@ -56,19 +57,18 @@ body{
   line-height:1.6;
 }
 
-/* ảnh */
 .popup img{
   width:100%;
   border-radius:15px;
   margin-top:15px;
-  box-shadow:0 0 15px gold;
+  box-shadow:0 0 20px gold;
 }
 
 .close{
   position:absolute;
-  right:20px;
-  top:10px;
-  font-size:26px;
+  right:25px;
+  top:15px;
+  font-size:28px;
   cursor:pointer;
   color:red;
 }
@@ -79,6 +79,7 @@ canvas{
   top:0;
   left:0;
   pointer-events:none;
+  z-index:1;
 }
 </style>
 </head>
@@ -105,12 +106,12 @@ canvas{
   </div>
 </div>
 
-<!-- Nhạc nền -->
+<!-- nhạc nền -->
 <audio id="music" loop>
 <source src="https://cdn.pixabay.com/audio/2022/12/20/audio_3c8d17e0b1.mp3">
 </audio>
 
-<!-- âm thanh pháo hoa -->
+<!-- tiếng pháo -->
 <audio id="boom">
 <source src="https://cdn.pixabay.com/audio/2022/03/15/audio_c18c7a1a6c.mp3">
 </audio>
@@ -122,7 +123,6 @@ let started=false;
 
 // mở popup
 document.getElementById("clickText").onclick=function(){
-
  document.getElementById("popup").style.display="block";
 
  if(!started){
@@ -154,7 +154,6 @@ function boomSound(){
 }
 
 function createFirework(){
-
  boomSound();
 
  let x=Math.random()*canvas.width;
@@ -172,7 +171,6 @@ function createFirework(){
 }
 
 function animate(){
-
  ctx.fillStyle="rgba(0,0,0,.2)";
  ctx.fillRect(0,0,canvas.width,canvas.height);
 
