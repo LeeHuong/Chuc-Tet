@@ -9,17 +9,32 @@ body{
   margin:0;
   font-family:Arial;
   text-align:center;
-  background:black;
+  background:linear-gradient(135deg, #8B0000, #FF4500);
   color:white;
+  overflow-x:hidden;
+  min-height:100vh;
 }
 
 /* nút bấm */
 #clickText{
   margin-top:120px;
   font-size:32px;
-  color:#00eaff;
+  color:#FFD700;
   cursor:pointer;
-  text-shadow:0 0 20px #00eaff;
+  text-shadow:0 0 20px #FFA500, 0 0 40px #FF0000;
+  position:relative;
+  z-index:10;
+  background:rgba(0,0,0,0.3);
+  padding:15px 30px;
+  border-radius:50px;
+  display:inline-block;
+  border:2px solid #FFD700;
+  transition:0.3s;
+}
+
+#clickText:hover {
+  transform:scale(1.1);
+  background:rgba(255,215,0,0.2);
 }
 
 /* popup nền */
@@ -30,19 +45,46 @@ body{
   width:100%;
   height:100%;
   background:rgba(0,0,0,0.7);
-  z-index:999;
+  z-index:1000;
 }
 
 /* hộp lời chúc */
 .popup-content{
-  background:rgba(255,255,255,0.95);
-  backdrop-filter:blur(8px);
-  color:#111;
   width:360px;
-  padding:25px;
   margin:8% auto;
   border-radius:20px;
   animation:zoom 0.4s ease;
+  position:relative;
+  z-index:1001;
+  border:3px solid #FFD700;
+  box-shadow:0 0 50px rgba(255,215,0,0.5);
+  overflow: hidden;
+  background: white; /* Màu nền dự phòng */
+}
+
+/* Ảnh nền popup - dùng thẻ img thực tế */
+.popup-background-img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0.3;
+  z-index: 0;
+}
+
+/* Nội dung popup */
+.popup-inner {
+  position: relative;
+  padding: 25px;
+  z-index: 1;
+  background-color: rgba(255, 255, 255, 0.7);
+  border-radius: 20px;
+  min-height: 300px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
 @keyframes zoom{
@@ -55,145 +97,246 @@ body{
   font-weight:bold;
   color:#d40000;
   line-height:1.6;
-}
-
-.popup img{
-  width:100%;
-  border-radius:15px;
-  margin-top:15px;
-  box-shadow:0 0 20px gold;
+  text-shadow: 1px 1px 2px white;
+  background-color: rgba(255, 255, 255, 0.5);
+  padding: 10px;
+  border-radius: 10px;
 }
 
 .close{
   position:absolute;
-  right:25px;
-  top:15px;
+  right:15px;
+  top:10px;
   font-size:28px;
   cursor:pointer;
   color:red;
+  transition:0.3s;
+  background: white;
+  width: 35px;
+  height: 35px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  z-index: 10;
+  box-shadow: 0 0 10px rgba(0,0,0,0.3);
 }
 
-/* canvas pháo hoa */
-canvas{
+.close:hover {
+  transform:scale(1.2);
+  background: #ffeeee;
+}
+
+/* Container cho hiệu ứng hình ảnh Tết */
+#tet-effects {
   position:fixed;
   top:0;
   left:0;
+  width:100%;
+  height:100%;
   pointer-events:none;
   z-index:1;
+}
+
+.tet-item {
+  position:absolute;
+  pointer-events:none;
+  animation: float linear infinite;
+  opacity:0;
+  object-fit: cover;
+  border-radius: 10px;
+  box-shadow: 0 0 15px rgba(255,215,0,0.8);
+}
+
+@keyframes float {
+  0% {
+    transform: translateY(100vh) rotate(0deg);
+    opacity:0.9;
+  }
+  100% {
+    transform: translateY(-100px) rotate(360deg);
+    opacity:0;
+  }
+}
+
+/* Thông báo tương tác */
+#interactHint {
+  position:fixed;
+  bottom:20px;
+  left:0;
+  right:0;
+  color:#FFD700;
+  font-size:14px;
+  z-index:10;
+  text-shadow:0 0 10px red;
 }
 </style>
 </head>
 
 <body>
 
-<h2 id="clickText">🎁 Nhấp vào để nhận lời chúc 🎁</h2>
+<h2 id="clickText">🧧 Nhấp vào để nhận lời chúc 🧧</h2>
+<div id="interactHint">(Nhấp vào màn hình để bắt đầu)</div>
 
 <div id="popup" class="popup">
   <div class="popup-content">
-    <span class="close" onclick="closePopup()">×</span>
+    <!-- Dùng thẻ IMG thay vì background-image -->
+    <img class="popup-background-img" id="popup-bg-img" src="" alt="Nền Tết">
+    
+    <!-- Nội dung chính -->
+    <div class="popup-inner">
+      <span class="close" onclick="closePopup()">×</span>
 
-    <h2 style="color:orange">🎆 CHÚC MỪNG NĂM MỚI 🎆</h2>
+      <h2 style="color:#FF4500;">🎆 CHÚC MỪNG NĂM MỚI 🎆</h2>
 
-    <div class="message">
-    Chúc bạn và gia đình năm mới sức khỏe, may mắn,<br>
-    thành công và hạnh phúc ❤️<br><br>
-    <span style="color:#ff8800">
-    An khang thịnh vượng — Phát tài phát lộc !!!
-    </span>
+      <div class="message">
+      Chúc bạn và gia đình năm mới sức khỏe, may mắn,<br>
+      thành công và hạnh phúc ❤️<br><br>
+      <span style="color:#FF8800; font-size:24px;">
+      An khang thịnh vượng — Phát tài phát lộc !!!
+      </span>
+      </div>
+      
+      <div style="margin-top:20px; font-size:16px; color:#333;">
+        🐎 Mừng xuân 2026 🐎
+      </div>
     </div>
-
-    <img src="https://drive.google.com/uc?export=view&id=1ARDKBGrrc3Rf1esZ9IXDyaXCP21I1WLr">
   </div>
 </div>
 
 <!-- nhạc nền -->
-<audio id="music" loop>
+<audio id="music" loop preload="auto">
 <source src="https://cdn.pixabay.com/audio/2022/12/20/audio_3c8d17e0b1.mp3">
 </audio>
 
 <!-- tiếng pháo -->
-<audio id="boom">
+<audio id="boom" preload="auto">
 <source src="https://cdn.pixabay.com/audio/2022/03/15/audio_c18c7a1a6c.mp3">
 </audio>
 
-<canvas id="fireworks"></canvas>
+<!-- Hiệu ứng hình ảnh Tết -->
+<div id="tet-effects"></div>
 
 <script>
 let started=false;
+
+// 🟢🟢🟢 THAY LINK IMGUR CỦA BẠN VÀO ĐÂY 🟢🟢🟢
+const imageLink = "https://i.imgur.com/123YQWf.jpeg"; // Thay bằng link Imgur của bạn
+
+// Gán ảnh nền cho popup
+document.getElementById('popup-bg-img').src = imageLink;
+
+// Mảng các biểu tượng Tết
+const tetSymbols = ['🌸', '🌼', '🧧', '🏮', '✨', '💰', '🍊', '💴', '🤑', '🎇'];
+
+// Hàm phát nhạc
+function playMusic() {
+  let music = document.getElementById("music");
+  music.play().catch(e => {
+    console.log("Autoplay bị chặn:", e);
+  });
+}
 
 // mở popup
 document.getElementById("clickText").onclick=function(){
  document.getElementById("popup").style.display="block";
 
  if(!started){
-   document.getElementById("music").play();
-   startFireworks();
+   playMusic();
+   startTetEffects();
    started=true;
  }
 }
 
-// đóng popup
+// Đóng popup
 function closePopup(){
  document.getElementById("popup").style.display="none";
  document.getElementById("music").pause();
 }
 
-/* pháo hoa */
-const canvas=document.getElementById("fireworks");
-const ctx=canvas.getContext("2d");
+// Sự kiện click toàn trang
+document.body.addEventListener('click', function() {
+  if (!started) {
+    playMusic();
+  }
+}, { once: true });
 
-canvas.width=innerWidth;
-canvas.height=innerHeight;
+/* HIỆU ỨNG HÌNH ẢNH TẾT */
+const tetContainer = document.getElementById('tet-effects');
 
-let particles=[];
-
-function boomSound(){
- let s=document.getElementById("boom");
- s.currentTime=0;
- s.play();
+// Hàm tạo hiệu ứng rơi
+function createTetEffect() {
+  // Dùng emoji cho hiệu ứng rơi
+  const item = document.createElement('div');
+  item.className = 'tet-item';
+  
+  const randomSymbol = tetSymbols[Math.floor(Math.random() * tetSymbols.length)];
+  item.textContent = randomSymbol;
+  item.style.fontSize = Math.random() * 30 + 20 + 'px';
+  
+  const left = Math.random() * 100;
+  item.style.left = left + '%';
+  
+  const duration = Math.random() * 4 + 3;
+  item.style.animationDuration = duration + 's';
+  
+  const delay = Math.random() * 2;
+  item.style.animationDelay = delay + 's';
+  
+  // Màu sắc ngẫu nhiên
+  item.style.color = `hsl(${Math.random() * 60 + 30}, 90%, 60%)`;
+  item.style.textShadow = '0 0 10px currentColor';
+  
+  tetContainer.appendChild(item);
+  
+  setTimeout(() => {
+    if (item.parentNode) {
+      item.remove();
+    }
+  }, (duration + delay) * 1000);
 }
 
-function createFirework(){
- boomSound();
-
- let x=Math.random()*canvas.width;
- let y=Math.random()*canvas.height/2;
-
- for(let i=0;i<80;i++){
-  particles.push({
-    x:x,
-    y:y,
-    angle:Math.random()*Math.PI*2,
-    speed:Math.random()*6+2,
-    life:100
-  });
- }
+// Phát tiếng pháo
+function playFirecrackerSound() {
+  let boom = document.getElementById("boom");
+  boom.currentTime = 0;
+  boom.play().catch(e => console.log("Không thể phát tiếng pháo:", e));
 }
 
-function animate(){
- ctx.fillStyle="rgba(0,0,0,.2)";
- ctx.fillRect(0,0,canvas.width,canvas.height);
-
- particles.forEach((p,i)=>{
-   p.x+=Math.cos(p.angle)*p.speed;
-   p.y+=Math.sin(p.angle)*p.speed;
-   p.life--;
-
-   ctx.beginPath();
-   ctx.arc(p.x,p.y,2,0,Math.PI*2);
-   ctx.fillStyle="hsl("+Math.random()*360+",100%,50%)";
-   ctx.fill();
-
-   if(p.life<=0) particles.splice(i,1);
- });
-
- requestAnimationFrame(animate);
+// Bắt đầu hiệu ứng Tết
+function startTetEffects() {
+  setInterval(() => {
+    for (let i = 0; i < 3; i++) {
+      setTimeout(() => {
+        createTetEffect();
+      }, i * 100);
+    }
+    
+    if (Math.random() > 0.7) {
+      playFirecrackerSound();
+    }
+  }, 300);
 }
 
-function startFireworks(){
- setInterval(createFirework,900);
- animate();
+// Hiệu ứng đặc biệt khi mở popup
+function createSpecialEffect() {
+  for (let i = 0; i < 15; i++) {
+    setTimeout(() => {
+      createTetEffect();
+    }, i * 50);
+  }
 }
+
+// Ghi đè hàm mở popup
+const originalClick = document.getElementById("clickText").onclick;
+document.getElementById("clickText").onclick = function() {
+  originalClick();
+  createSpecialEffect();
+};
+
+// Kiểm tra xem ảnh đã được gán chưa
+console.log("Ảnh nền popup:", imageLink);
 </script>
 
 </body>
